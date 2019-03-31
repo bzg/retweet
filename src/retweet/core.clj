@@ -12,7 +12,7 @@
 ;; CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, and ACCESS_TOKEN_SECRET
 (def config (read-string (slurp "config.edn")))
 
-;; (def ids (set (map get-user-id (:accounts config))))
+(def ids (set (map get-user-id (:accounts config))))
 
 (def hashtags (:hashtags config))
 
