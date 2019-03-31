@@ -12,7 +12,7 @@
 ;; CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, and ACCESS_TOKEN_SECRET
 (def config (read-string (slurp "config.edn")))
 
-(def ids (set (map get-user-id (:accounts config))))
+;; (def ids (set (map get-user-id (:accounts config))))
 
 (def hashtags (:hashtags config))
 
@@ -21,10 +21,10 @@
    (str "(?is).*(?:"
         (clojure.string/join "|" (map #(format "(#%s)" %) hashtags)) ").*")))
 
-(defn statuses-filter-eig
+(defn statuses-filter
   "Return a lazy sequence of tweets authored by :accounts."
   [credentials]
-  (log/info "Following EIG users")
+  (log/info "Following users")
   (->> (api/statuses-filter credentials :params {:follow (clojure.string/join "," ids)})
        (filter (fn [status] (->> status :user :id (contains? ids))))))
 
@@ -38,9 +38,9 @@
         (log/info "Retweeting status " (:id status))))))
 
 (defn retweet
-  "Filter through EIG community statuses and maybe retweet."
+  "Filter through users' statuses and maybe retweet."
   [credentials]
-  (->> (statuses-filter-eig credentials)
+  (->> (statuses-filter credentials)
        (maybe-retweet credentials))
   (log/info "Finished!"))
 
