@@ -1,5 +1,7 @@
 Twitter bot to retweet tweets made by users using some hashtags.
 
+This repository is *archived*, the code is now developped [[https://github.com/etalab/retweet][here]].
+
 * Configure
 
 ** Create a Twitter app and get keys and tokens
