@@ -1,3 +1,8 @@
+# Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+
+# SPDX-License-Identifier: EPL-2.0
+# License-Filename: LICENSES/EPL-2.0.txt
+
 FROM openjdk:8-alpine
 
 ENV CONSUMER_KEY ${CONSUMER_KEY}
