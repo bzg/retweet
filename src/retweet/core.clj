@@ -39,7 +39,10 @@
   (doseq [status statuses]
     (let [text (get-in status [:extended_tweet :full_text] (:text status))]
       (when (re-matches hashtags-regexp text)
-        (api/statuses-retweet-id credentials :params {:id (:id status)})
+        (try
+          (api/statuses-retweet-id credentials :params {:id (:id status)})
+          (catch Exception e
+            (println (str "Caught exception: " (.toString e)))))
         (log/info "Retweeting status " (:id status))))))
 
 (defn retweet
