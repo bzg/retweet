@@ -8,6 +8,7 @@
   :license {:name "Eclipse Public License v2.0"
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
+                 [aleph "0.4.6"]
                  [org.clojure/tools.logging "0.4.1"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [twttr "3.2.1"]]
