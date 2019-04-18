@@ -3,13 +3,12 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject retweet "0.3.1"
+(defproject retweet "0.3.2"
   :url "https://github.com/bzg/retweet"
   :license {:name "Eclipse Public License v2.0"
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
-                 [org.clojure/tools.logging "0.4.1"]
-                 [ch.qos.logback/logback-classic "1.2.3"]
+                 [com.taoensso/timbre "4.10.0"]
                  [twttr "3.2.2"]]
   :description "Bot to retweet tweets from users with hashtags."
   :main retweet.core

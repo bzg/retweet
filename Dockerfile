@@ -10,7 +10,7 @@ ENV CONSUMER_SECRET ${CONSUMER_SECRET}
 ENV ACCESS_TOKEN ${ACCESS_TOKEN}
 ENV ACCESS_TOKEN_SECRET ${ACCESS_TOKEN_SECRET}
 
-ADD target/retweet-0.3.1-standalone.jar /retweet-0.3.1-standalone.jar
+ADD target/retweet-0.3.2-standalone.jar /retweet-0.3.2-standalone.jar
 ADD config.edn config.edn
 
-CMD ["java", "-jar", "/retweet-0.3.1-standalone.jar"]
+CMD ["java", "-jar", "/retweet-0.3.2-standalone.jar"]
