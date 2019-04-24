@@ -25,14 +25,18 @@
 ;; Setup credentials
 ;;
 ;; Environment variables are
-;; CONSUMER_KEY: The application consumer key
-;; CONSUMER_SECRET: The application consumer secret
-;; ACCESS_TOKEN: The application access token
-;; ACCESS_TOKEN_SECRET: The application access token secret
+;; TWITTER_CONSUMER_KEY: The application consumer key
+;; TWITTER_CONSUMER_SECRET: The application consumer secret
+;; TWITTER_ACCESS_TOKEN: The application access token
+;; TWITTER_ACCESS_TOKEN_SECRET: The application access token secret
 
 (defn creds []
   (try
-    (auth/env->UserCredentials)
+    (auth/env->UserCredentials
+     {:consumer-key      "TWITTER_CONSUMER_KEY"
+      :consumer-secret   "TWITTER_CONSUMER_SECRET"
+      :user-token        "TWITTER_ACCESS_TOKEN"
+      :user-token-secret "TWITTER_ACCESS_TOKEN_SECRET"})
     (catch Exception e
       (timbre/error (ex-data e)))))
 
