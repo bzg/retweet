@@ -53,6 +53,11 @@ variables are in =~/retweet_envs=:
 
 Contributions are welcome as issues, questions or code.
 
+* Support the Clojure ecosystem
+
+If you like Clojure, please consider supporting Clojure developers by
+donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].  Thanks!
+
 * License
 
 © 2019 Bastien Guerry
