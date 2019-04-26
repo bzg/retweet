@@ -24,23 +24,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup credentials
 ;;
-;; Environment variables are
-;; TWITTER_CONSUMER_KEY: The application consumer key
-;; TWITTER_CONSUMER_SECRET: The application consumer secret
-;; TWITTER_ACCESS_TOKEN: The application access token
-;; TWITTER_ACCESS_TOKEN_SECRET: The application access token secret
-;; TWITTER_ACCESS_TOKEN_SECRET: The application access token secret
-;; RETWEET_CONFIG: path for the configuration file
-
-(defn creds []
-  (try
-    (auth/env->UserCredentials
-     {:consumer-key      "TWITTER_CONSUMER_KEY"
-      :consumer-secret   "TWITTER_CONSUMER_SECRET"
-      :user-token        "TWITTER_ACCESS_TOKEN"
-      :user-token-secret "TWITTER_ACCESS_TOKEN_SECRET"})
-    (catch Exception e
-      (timbre/error (ex-data e)))))
+;; The RETWEET_CONFIG environment variable contains the path for the
+;; configuration file.
 
 (defn config []
   (try
@@ -48,9 +33,17 @@
     (catch Exception e
       (timbre/error (ex-data e)))))
 
+(defn credentials []
+  (try
+    (auth/map->UserCredentials
+     (select-keys (config)
+                  [:consumer-key :consumer-secret :user-token :user-token-secret]))
+    (catch Exception e
+      (timbre/error (ex-data e)))))
+
 (defn get-user-id [user-screen-name]
   (try
-    (:id (api/users-show (creds) :params {:screen_name user-screen-name}))
+    (:id (api/users-show (credentials) :params {:screen_name user-screen-name}))
     (catch Exception e
       (timbre/warn (str "Can't get user id for " user-screen-name)))))
 
@@ -91,12 +84,9 @@
   (->> (statuses-filter credentials)
        (maybe-retweet credentials)))
 
-;; (defn -main []
-;;   (timbre/info "Listening to tweets...")
-;;   (try
-;;     (retweet (creds))
-;;     (catch Exception e
-;;       (timbre/fatal (str "Bot died: " (.toString e))))))
-
 (defn -main []
-  (io/file (System/getenv "RETWEET_CONFIG")))
+  (timbre/info "Listening to tweets...")
+  (try
+    (retweet (credentials))
+    (catch Exception e
+      (timbre/fatal (str "Bot died: " (.toString e))))))

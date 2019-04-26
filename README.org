@@ -7,32 +7,32 @@ hashtags.
 
 You first need to [[https://developer.twitter.com/en/apps][create a Twitter application]].
 
-** Get keys and tokens
+** Create a configuration file
 
-In your =~/.profile= file (or any other relevant place), set the
-environment variables with the values for your application:
+For example, store this in =~/.retweet_config.edn=:
 
-: TWITTER_CONSUMER_KEY=...
-: TWITTER_CONSUMER_SECRET=...
-: TWITTER_ACCESS_TOKEN=...
-: TWITTER_ACCESS_TOKEN_SECRET=...
-   
-** Store the list of Twitter users and retweeted hastags
+: {;; Twitter app configuration
+:  :consumer-key      "example"
+:  :consumer-secret   "example"
+:  :user-token        "example"
+:  :user-token-secret "example"
+:  ;; Retweet configuration
+:  :accounts          #{"bzg2"} 
+:  :hashtags          #{"#freesoftware"}}
 
-In =~/.profile=, define the file where to find users and hastags:
-
-: RETWEET_CONFIG=/path/to/config.edn
- 
-In this =/path/to/config.edn= file, add the list of accounts to follow
-and of hashtags to retweet:
-
-: {:accounts #{"user1" "user2"} 
-:  :hashtags #{"hashtag1" "hastag2"}}
-
-See config_example.edn in this repository.
+See =config_example.edn= in this repository.
 
 When =user1= or =user2= tweets contain =#hashtag1= or =#hashtag1=, they will
 be retweeted by your bot.
+
+** Point =RETWEET_CONFIG= to this configuration file
+
+The =RETWEET_CONFIG= environment variables should point to the
+configuration file:
+
+: RETWEET_CONFIG=/path/to/config.edn
+ 
+You can set this in your =~/.profile= file.
 
 * Deploy
 
@@ -43,11 +43,11 @@ be retweeted by your bot.
 
 ** As a docker container
 
-Assuming you already created the =jar= file and your environment
-variables are in =~/retweet_envs=:
+Assuming you already created the =jar= file and your =RETWEET_CONFIG=
+environment variable:
 
 : docker build -t retweet_bot .
-: docker run -it --env-file=~/retweet_envs retweet_bot
+: docker run -it retweet_bot
 
 * Contribute
 
