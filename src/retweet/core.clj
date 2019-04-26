@@ -29,6 +29,8 @@
 ;; TWITTER_CONSUMER_SECRET: The application consumer secret
 ;; TWITTER_ACCESS_TOKEN: The application access token
 ;; TWITTER_ACCESS_TOKEN_SECRET: The application access token secret
+;; TWITTER_ACCESS_TOKEN_SECRET: The application access token secret
+;; RETWEET_CONFIG: path for the configuration file
 
 (defn creds []
   (try
@@ -42,7 +44,7 @@
 
 (defn config []
   (try
-    (read-string (slurp "config.edn"))
+    (read-string (slurp (System/getenv "RETWEET_CONFIG")))
     (catch Exception e
       (timbre/error (ex-data e)))))
 
@@ -89,9 +91,12 @@
   (->> (statuses-filter credentials)
        (maybe-retweet credentials)))
 
+;; (defn -main []
+;;   (timbre/info "Listening to tweets...")
+;;   (try
+;;     (retweet (creds))
+;;     (catch Exception e
+;;       (timbre/fatal (str "Bot died: " (.toString e))))))
+
 (defn -main []
-  (timbre/info "Listening to tweets...")
-  (try
-    (retweet (creds))
-    (catch Exception e
-      (timbre/fatal (str "Bot died: " (.toString e))))))
+  (io/file (System/getenv "RETWEET_CONFIG")))

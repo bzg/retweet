@@ -1,18 +1,38 @@
-Twitter bot to retweet tweets made by users using some hashtags.
+Twitter bot to retweet tweets made by users when they tweet using some
+hashtags.
 
 * Configure
 
-** Create a Twitter app and get keys and tokens
+** Create a Twitter app
+
+You first need to [[https://developer.twitter.com/en/apps][create a Twitter application]].
+
+** Get keys and tokens
+
+In your =~/.profile= file (or any other relevant place), set the
+environment variables with the values for your application:
 
 : TWITTER_CONSUMER_KEY=...
 : TWITTER_CONSUMER_SECRET=...
 : TWITTER_ACCESS_TOKEN=...
 : TWITTER_ACCESS_TOKEN_SECRET=...
    
-** Edit config.edn to list users and hastags
+** Store the list of Twitter users and retweeted hastags
+
+In =~/.profile=, define the file where to find users and hastags:
+
+: RETWEET_CONFIG=/path/to/config.edn
+ 
+In this =/path/to/config.edn= file, add the list of accounts to follow
+and of hashtags to retweet:
 
 : {:accounts #{"user1" "user2"} 
 :  :hashtags #{"hashtag1" "hastag2"}}
+
+See config_example.edn in this repository.
+
+When =user1= or =user2= tweets contain =#hashtag1= or =#hashtag1=, they will
+be retweeted by your bot.
 
 * Deploy
 
@@ -23,10 +43,11 @@ Twitter bot to retweet tweets made by users using some hashtags.
 
 ** As a docker container
 
-Assuming your environment variables are in =~/my_envs=:
+Assuming you already created the =jar= file and your environment
+variables are in =~/retweet_envs=:
 
 : docker build -t retweet_bot .
-: docker run -it --env-file=~/my_envs retweet_bot
+: docker run -it --env-file=~/retweet_envs retweet_bot
 
 * Contribute
 

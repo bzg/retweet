@@ -3,7 +3,7 @@
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(defproject retweet "0.3.3"
+(defproject retweet "0.3.4"
   :url "https://github.com/bzg/retweet"
   :license {:name "Eclipse Public License v2.0"
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
