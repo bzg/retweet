@@ -60,6 +60,6 @@ donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].  Tha
 
 * License
 
-© 2019 Bastien Guerry
+2019-2020 Bastien Guerry
 
-Licensed under the EPL 2.0.
+Licensed under the [[file:LICENSE][EPL 2.0]].
