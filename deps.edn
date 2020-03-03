@@ -1,0 +1,25 @@
+;; Copyright (c) 2020 DINUM, Bastien Guerry <bastien.guerry@data.gouv.fr>
+;; SPDX-License-Identifier: EPL-2.0
+;; License-Filename: LICENSE
+
+{:deps {org.clojure/clojure {:mvn/version "RELEASE"}
+        com.taoensso/timbre {:mvn/version "RELEASE"}
+        twttr               {:mvn/version "RELEASE"}}
+
+ :aliases {:native-image
+           {:main-opts ["-m clj.native-image core"
+                        ;; "--verbose"
+                        "--no-fallback"
+                        "--report-unsupported-elements-at-runtime"
+                        "--initialize-at-build-time"
+                        ;; Allow https
+                        "-H:EnableURLProtocols=http,https"
+                        ;; "-H:+ReportExceptionStackTraces"
+                        ;; "-H:+TraceClassInitialization"
+                        ;; Optional native image name override
+                        "-H:Name=retweet"]
+            :jvm-opts  ["-Dclojure.compiler.direct-linking=true"]
+            :extra-deps
+            {clj.native-image
+             {:git/url "https://github.com/taylorwood/clj.native-image.git"
+              :sha     "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}}}}

@@ -1,24 +1,12 @@
-;; Copyright (c) 2019 Bastien Guerry <bzg@bzg.fr>
+;; Copyright (c) 2019-2020 Bastien Guerry <bzg@bzg.fr>
 ;; SPDX-License-Identifier: EPL-2.0
 ;; License-Filename: LICENSES/EPL-2.0.txt
 
-(ns retweet.core
+(ns core
   (:require [twttr.api :as api]
             [twttr.auth :as auth]
-            [clojure.java.io :as io]
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as appenders])
+            [clojure.string :as s])
   (:gen-class))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Setup logging
-
-(timbre/set-config!
- {:level     :debug
-  :output-fn (partial timbre/default-output-fn {:stacktrace-fonts {}})
-  :appenders
-  {:println (timbre/println-appender {:stream :auto})
-   :spit    (appenders/spit-appender {:fname "log.txt"})}})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup credentials
@@ -30,7 +18,7 @@
   (try
     (read-string (slurp (System/getenv "RETWEET_CONFIG")))
     (catch Exception e
-      (timbre/error (ex-data e)))))
+      (println (ex-data e)))))
 
 (defn credentials []
   (try
@@ -38,13 +26,14 @@
      (select-keys (config)
                   [:consumer-key :consumer-secret :user-token :user-token-secret]))
     (catch Exception e
-      (timbre/error (ex-data e)))))
+      (println (ex-data e)))))
 
 (defn get-user-id [user-screen-name]
   (try
     (:id (api/users-show (credentials) :params {:screen_name user-screen-name}))
     (catch Exception e
-      (timbre/warn (str "Can't get user id for " user-screen-name)))))
+      (println (str "Can't get user id for " user-screen-name
+                    "Exception: " e)))))
 
 ;; Define the set of twitter ids to watch
 (def ids (set (map get-user-id (:accounts (config)))))
@@ -56,14 +45,15 @@
 (def hashtags-regexp
   (re-pattern
    (str "(?is).*(?:"
-        (clojure.string/join "|" (map #(format "(#%s)" %) hashtags)) ").*")))
+        (s/join "|" (map #(format "(#%s)" %) hashtags)) ").*")))
 
 (defn statuses-filter
   "Return a lazy sequence of tweets authored by :accounts."
   [credentials]
-  (timbre/info "Following users")
-  (->> (api/statuses-filter credentials :params {:follow (clojure.string/join "," ids)})
-       (filter (fn [status] (->> status :user :id (contains? ids))))))
+  (println "Following users")
+  (filter (fn [status] (->> status :user :id (contains? ids)))
+          (api/statuses-filter
+           credentials :params {:follow (s/join "," ids)})))
 
 (defn maybe-retweet
   "Retweet `statuses` if they match `hashtags-regexp`."
@@ -74,18 +64,17 @@
         (try
           (api/statuses-retweet-id credentials :params {:id (:id status)})
           (catch Exception e
-            (timbre/error (str "Caught exception: " (.toString e)))))
-        (timbre/info "Retweeting status " (:id status))))))
+            (println (str "Caught exception: " (str e)))))
+        (println "Retweeting status " (:id status))))))
 
 (defn retweet
   "Filter through users' statuses and maybe retweet."
   [credentials]
-  (->> (statuses-filter credentials)
-       (maybe-retweet credentials)))
+  (maybe-retweet credentials (statuses-filter credentials)))
 
 (defn -main []
-  (timbre/info "Listening to tweets...")
+  (println "Listening to tweets...")
   (try
     (retweet (credentials))
     (catch Exception e
-      (timbre/fatal (str "Bot died: " (.toString e))))))
+      (println (str "Bot died: " (str e))))))
