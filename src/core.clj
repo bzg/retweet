@@ -5,7 +5,7 @@
 (ns core
   (:require [twttr.api :as api]
             [twttr.auth :as auth]
-            [clojure.string :as s])
+            [clojure.string :as string])
   (:gen-class))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,17 +14,25 @@
 ;; The RETWEET_CONFIG environment variable contains the path for the
 ;; configuration file.
 
-(defn config []
-  (try
-    (read-string (slurp (System/getenv "RETWEET_CONFIG")))
-    (catch Exception e
-      (println (ex-data e)))))
+;; FIXME
+
+(defn- split-string-to-set [s]
+  (into #{} (string/split s #"\s")))
+
+(def config
+  {:consumer-key      (System/getenv "RETWEET_CONSUMER_KEY")
+   :consumer-secret   (System/getenv "RETWEET_CONSUMER_SECRET")
+   :user-token        (System/getenv "RETWEET_USER_TOKEN")
+   :user-token-secret (System/getenv "RETWEET_USER_TOKEN_SECRET")
+   :accounts          (split-string-to-set (System/getenv "RETWEET_ACCOUNTS"))
+   :hashtags          (split-string-to-set (System/getenv "RETWEET_HASTAGS"))
+   })
 
 (defn credentials []
   (try
     (auth/map->UserCredentials
-     (select-keys (config)
-                  [:consumer-key :consumer-secret :user-token :user-token-secret]))
+     (select-keys config [:consumer-key :consumer-secret
+                          :user-token :user-token-secret]))
     (catch Exception e
       (println (ex-data e)))))
 
@@ -36,16 +44,16 @@
                     "Exception: " e)))))
 
 ;; Define the set of twitter ids to watch
-(def ids (set (map get-user-id (:accounts (config)))))
-
-;; Define the set of twitter hashtags to watch
-(def hashtags (:hashtags (config)))
+(def ids (set (map get-user-id (:accounts config))))
 
 ;; Define the regexp for the set of hashtags to watch
 (def hashtags-regexp
-  (re-pattern
-   (str "(?is).*(?:"
-        (s/join "|" (map #(format "(#%s)" %) hashtags)) ").*")))
+  (if-let [hashtags (seq (:hashtags config))]
+    (re-pattern
+     (str "(?is)" (->> (:hashtags config)
+                       (map #(format "#%s" %))
+                       (string/join "|"))))
+    #""))
 
 (defn statuses-filter
   "Return a lazy sequence of tweets authored by :accounts."
@@ -53,7 +61,7 @@
   (println "Following users")
   (filter (fn [status] (->> status :user :id (contains? ids)))
           (api/statuses-filter
-           credentials :params {:follow (s/join "," ids)})))
+           credentials :params {:follow (string/join "," ids)})))
 
 (defn maybe-retweet
   "Retweet `statuses` if they match `hashtags-regexp`."
