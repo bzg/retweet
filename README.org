@@ -7,32 +7,17 @@ hashtags.
 
 You first need to [[https://developer.twitter.com/en/apps][create a Twitter application]].
 
-** Create a configuration file
+** Set up environment variables
 
-For example, store this in =~/.retweet_config.edn=:
+: export RETWEET_CONSUMER_KEY=""
+: export RETWEET_CONSUMER_SECRET=""
+: export RETWEET_USER_TOKEN=""
+: export RETWEET_USER_TOKEN_SECRET=""
+: export RETWEET_ACCOUNTS="user1 user2"
+: export RETWEET_HASTAGS="hashtag1 hashtag2"
 
-: {;; Twitter app configuration
-:  :consumer-key      "example"
-:  :consumer-secret   "example"
-:  :user-token        "example"
-:  :user-token-secret "example"
-:  ;; Retweet configuration
-:  :accounts          #{"bzg2"} 
-:  :hashtags          #{"#freesoftware"}}
-
-See =config_example.edn= in this repository.
-
-When =user1= or =user2= tweets contain =#hashtag1= or =#hashtag1=, they will
-be retweeted by your bot.
-
-** Point =RETWEET_CONFIG= to this configuration file
-
-The =RETWEET_CONFIG= environment variables should point to the
-configuration file:
-
-: RETWEET_CONFIG=/path/to/config.edn
- 
-You can set this in your =~/.profile= file.
+When tweets by =user1= or =user2= tweets contain =#hashtag1= or =#hashtag1=,
+they will be retweeted.
 
 * Deploy
 
@@ -40,14 +25,6 @@ You can set this in your =~/.profile= file.
 
 : ~$ lein uberjar
 : ~$ java -jar target/retweet-0.3-standalone.jar
-
-** As a docker container
-
-Assuming you already created the =jar= file and your =RETWEET_CONFIG=
-environment variable:
-
-: docker build -t retweet_bot .
-: docker run -it retweet_bot
 
 * Contribute
 
@@ -60,6 +37,6 @@ donating to [[https://www.clojuriststogether.org][clojuriststogether.org]].  Tha
 
 * License
 
-2019-2020 Bastien Guerry
+2019-2021 Bastien Guerry
 
 Licensed under the [[file:LICENSE][EPL 2.0]].
