@@ -1,8 +1,0 @@
-{;; Twitter app configuration
- :consumer-key      "example"
- :consumer-secret   "example"
- :user-token        "example"
- :user-token-secret "example"
- ;; Retweet configuration
- :accounts          #{"bzg2"} 
- :hashtags          #{"#freesoftware"}}
